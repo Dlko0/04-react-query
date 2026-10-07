@@ -1,13 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getMovies } from '../../services/movieService';
-import MovieCard from '../MovieCard/MovieCard';
+import type { Movie } from '../../types/movie';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import Loader from '../Loader/Loader';
+import MovieGrid from '../MovieGrid/MovieGrid';
+import MovieModal from '../MovieModal/MovieModal';
 import Pagination from '../Pagination/Pagination';
+import SearchBar from '../SearchBar/SearchBar';
 import css from './App.module.css';
 
 function App() {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const moviePage = useQuery({
     queryKey: ['movies', page, query.trim()],
@@ -34,29 +40,11 @@ function App() {
             result.
           </p>
         </div>
-        <form
-          className={css.searchForm}
-          onSubmit={(event) => {
-            event.preventDefault();
-            setPage(1);
-          }}
-        >
-          <label className={css.srOnly} htmlFor="movie-search">
-            Search movies
-          </label>
-          <input
-            id="movie-search"
-            className={css.searchInput}
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search for a movie..."
-            autoComplete="off"
-          />
-          <button className={css.searchButton} type="submit">
-            Search
-          </button>
-        </form>
+        <SearchBar
+          value={query}
+          onChange={setQuery}
+          onSubmit={() => setPage(1)}
+        />
       </header>
 
       <section className={css.content} aria-live="polite">
@@ -70,17 +58,10 @@ function App() {
           </div>
         )}
 
-        {query.trim().length > 0 && moviePage.isPending && (
-          <div className={css.status} role="status">
-            Loading movies...
-          </div>
-        )}
+        {query.trim().length > 0 && moviePage.isPending && <Loader />}
 
         {query.trim().length > 0 && moviePage.isError && (
-          <div className={css.error} role="alert">
-            We could not load the movies. Check your API configuration and try
-            again.
-          </div>
+          <ErrorMessage message="We could not load the movies. Check your API configuration and try again." />
         )}
 
         {query.trim().length > 0 &&
@@ -100,11 +81,7 @@ function App() {
                 Page {page} of {totalPages}
               </span>
             </div>
-            <div className={css.movieGrid}>
-              {movies.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
-              ))}
-            </div>
+            <MovieGrid movies={movies} onSelectMovie={setSelectedMovie} />
             {totalPages > 1 && (
               <Pagination
                 pageCount={totalPages}
@@ -121,6 +98,10 @@ function App() {
           </>
         )}
       </section>
+      <MovieModal
+        movie={selectedMovie}
+        onClose={() => setSelectedMovie(null)}
+      />
     </main>
   );
 }
