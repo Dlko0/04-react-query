@@ -51,10 +51,10 @@ function MovieModal({ movie, onClose }: MovieModalProps) {
           ×
         </button>
         <div className={css.poster}>
-          {movie.poster_path ? (
+          {movie.backdrop_path ? (
             <img
-              src={`https://image.tmdb.org/t/p/w800${movie.poster_path}`}
-              alt={`${movie.title} poster`}
+              src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
+              alt={`${movie.title} backdrop`}
             />
           ) : (
             <div className={css.posterPlaceholder}>🎬</div>

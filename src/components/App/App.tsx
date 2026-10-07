@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { getMovies } from '../../services/movieService';
 import type { Movie } from '../../types/movie';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
@@ -30,6 +31,12 @@ function App() {
   const movies = moviePage.data?.results ?? [];
   const totalPages = moviePage.data?.total_pages ?? 0;
 
+  useEffect(() => {
+    if (moviePage.isSuccess && movies.length === 0) {
+      toast('No movies found. Try another title.');
+    }
+  }, [moviePage.isSuccess, movies.length]);
+
   return (
     <main className={css.app}>
       <header className={css.header}>
@@ -42,8 +49,6 @@ function App() {
           </p>
         </div>
         <SearchBar
-          value={query}
-          onChange={setQuery}
           onSubmit={(searchQuery) => {
             setQuery(searchQuery);
             setPage(1);

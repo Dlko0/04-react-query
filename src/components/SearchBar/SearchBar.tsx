@@ -2,12 +2,10 @@ import toast from 'react-hot-toast';
 import css from './SearchBar.module.css';
 
 interface SearchBarProps {
-  value: string;
-  onChange: (value: string) => void;
   onSubmit: (query: string) => void;
 }
 
-function SearchBar({ value, onChange, onSubmit }: SearchBarProps) {
+function SearchBar({ onSubmit }: SearchBarProps) {
   const handleSubmit = (formData: FormData) => {
     const query = formData.get('query')?.toString().trim() ?? '';
 
@@ -29,8 +27,6 @@ function SearchBar({ value, onChange, onSubmit }: SearchBarProps) {
         name="query"
         className={css.searchInput}
         type="search"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
         placeholder="Search for a movie..."
         autoComplete="off"
       />
