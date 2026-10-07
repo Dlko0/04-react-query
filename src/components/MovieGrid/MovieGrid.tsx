@@ -4,10 +4,10 @@ import css from './MovieGrid.module.css';
 
 interface MovieGridProps {
   movies: Movie[];
-  onSelectMovie: (movie: Movie) => void;
+  onSelect: (movie: Movie) => void;
 }
 
-function MovieGrid({ movies, onSelectMovie }: MovieGridProps) {
+function MovieGrid({ movies, onSelect }: MovieGridProps) {
   return (
     <div className={css.movieGrid}>
       {movies.map((movie) => (
@@ -15,7 +15,7 @@ function MovieGrid({ movies, onSelectMovie }: MovieGridProps) {
           key={movie.id}
           className={css.movieButton}
           type="button"
-          onClick={() => onSelectMovie(movie)}
+          onClick={() => onSelect(movie)}
           aria-label={`View details for ${movie.title}`}
         >
           <MovieCard movie={movie} />

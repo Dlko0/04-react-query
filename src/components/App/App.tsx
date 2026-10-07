@@ -20,6 +20,7 @@ function App() {
     queryFn: () => getMovies(page, query.trim()),
     enabled: query.trim().length > 0,
     retry: false,
+    placeholderData: (previousData) => previousData,
   });
 
   const handlePageChange = ({ selected }: { selected: number }) => {
@@ -43,7 +44,10 @@ function App() {
         <SearchBar
           value={query}
           onChange={setQuery}
-          onSubmit={() => setPage(1)}
+          onSubmit={(searchQuery) => {
+            setQuery(searchQuery);
+            setPage(1);
+          }}
         />
       </header>
 
@@ -81,7 +85,7 @@ function App() {
                 Page {page} of {totalPages}
               </span>
             </div>
-            <MovieGrid movies={movies} onSelectMovie={setSelectedMovie} />
+            <MovieGrid movies={movies} onSelect={setSelectedMovie} />
             {totalPages > 1 && (
               <Pagination
                 pageCount={totalPages}
